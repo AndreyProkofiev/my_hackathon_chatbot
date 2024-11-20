@@ -4,11 +4,24 @@ from fastapi import Request, Body
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from typing import Any, Dict, AnyStr, List, Union
+
+import os, sys
+from dotenv import load_dotenv
 ## for test
 import time
+load_dotenv('ya.env')
+
+source_p = os.environ['source_p']
+sys.path.append(module_p)
+from bot.llm_chain import chain
+
 
 app=FastAPI()
 
+
+JSONObject = Dict[AnyStr, Any]
+JSONArray = List[Any]
+JSONStructure = Union[JSONArray, JSONObject]
 
 
 @app.get("/")
@@ -18,28 +31,13 @@ def root():
     return JSONResponse(content=json_data)
 
 
+
 @app.post('/user_mess')
-def user_mess(data = Body()):
-    # json_data = jsonable_encoder(data)
-    # user_say = JSONResponse(content=json_data)
-  
-    return {"d":data, "t":str(type(data))}
-
-
-    # return ({"user_say":user_say,
-    #          "data_type": str(type(user_say))})
-
-JSONObject = Dict[AnyStr, Any]
-JSONArray = List[Any]
-JSONStructure = Union[JSONArray, JSONObject]
-
-
-@app.post('/user_mess2')
 def my_api_post(user_json: JSONStructure = None):
-    sleep_time = user_json["sleep_time"]
-    time.sleep(sleep_time)
-    user_say = user_json["message"]
-    return {"user_say": user_say, "api_sleep":sleep_time}
+    
+    g = user_json["message"]
+    answer = chain.invoke(g)
+    return {"LLM_answ": answer}
 
 if __name__ == "__main__":
     uvicorn.run(
