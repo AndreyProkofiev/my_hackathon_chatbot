@@ -41,8 +41,8 @@ def my_api_post(user_json: JSONStructure = None):
 
 if __name__ == "__main__":
     uvicorn.run(
-        "bot_api:app",
-        host='127.0.0.1',
+        "main:app",
+        host="0.0.0.0",
         port=8000,
         reload=True
     )
