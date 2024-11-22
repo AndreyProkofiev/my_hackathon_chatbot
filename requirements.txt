@@ -4,5 +4,7 @@ langchain-chroma==0.1.2
 chromadb==0.4.18
 yandex-chain==0.0.9
 uvicorn==0.32.0
-dotenv
-typing
+python-dotenv==1.0.1
+typing-inspect==0.9.0
+typing_extensions==4.12.2
+pandas==2.1.4
