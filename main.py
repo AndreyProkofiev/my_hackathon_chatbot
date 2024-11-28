@@ -7,13 +7,22 @@ from typing import Any, Dict, AnyStr, List, Union
 
 import os, sys
 from dotenv import load_dotenv
-## for test
-import time
+
 load_dotenv('ya.env')
 
-module_p = os.environ['module_p']
-sys.path.append(module_p)
 from bot.llm_chain import chain
+from bot.classifier import mk_classyfi
+
+def processor(q:str):
+    classyfi_answ = mk_classyfi(q)
+    if classyfi_answ == "консультация":
+        answer = chain.invoke(q)
+        return {"LLM_answ": answer,
+                "class":classyfi_answ}
+    else:
+        return {"LLM_answ": "",
+                "class":classyfi_answ}
+
 
 
 app=FastAPI()
@@ -36,8 +45,8 @@ def root():
 def my_api_post(user_json: JSONStructure = None):
     
     g = user_json["message"]
-    answer = chain.invoke(g)
-    return {"LLM_answ": answer}
+    answer = processor(q)
+    return answer
 
 if __name__ == "__main__":
     uvicorn.run(
