@@ -1,0 +1,1 @@
+from bot_api.application import app
